@@ -24,16 +24,22 @@ Instead of a simple/naive **scaling matrix** illustrated in [ASVD](docs/ASVD_2.p
 
 ![alt text](docs/SVD-LLM.png)
 
-
-this **whitening matrix** satisfies:
+this **whitening matrix** is computed such that it satisfies the following property:
 
 ![alt text](docs/whitening.png)
 
+## brainstorming
 
-## model design
+SVD-VGGT
 
+1. baseline: original VGGT, compare GFLOPs etc.
+2. benchmark among 3 different ways of doing SVD: 
+    1. vanilla-SVD-based
+    2. ASVD-based (scaling matrix to make it activation aware)
+    3. SVD-LLM-based (whitening matrix to create a direct mapping between singular values and compression loss)
 
-## experiment design
+Alternative idea:
 
-Baseline: original VGGT
-
+1. SVD-ViT (VGGT is already for multi-task, but maybe ViT has **broader impacts**?)
+    1. use the whitening + param update introduced from SVD-LLM
+    2. compare with existing ViT-related work like [Efficient Adaptation of Pre-trained Vision Transformer via Householder Transformation](https://arxiv.org/pdf/2410.22952)
