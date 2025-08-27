@@ -147,3 +147,8 @@ skyseg.onnx
 # pixi environments
 .pixi
 *.egg-info
+
+SVD-LLM/.vscode/*
+SVD-LLM/cache/*
+SVD-LLM/**/__pycache__
+SVD-LLM/utils/c4-*

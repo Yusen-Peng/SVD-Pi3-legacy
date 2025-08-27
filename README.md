@@ -43,3 +43,8 @@ Alternative idea:
 1. SVD-ViT (VGGT is already for multi-task, but maybe ViT has **broader impacts**?)
     1. use the whitening + param update introduced from SVD-LLM
     2. compare with existing ViT-related work like [Efficient Adaptation of Pre-trained Vision Transformer via Householder Transformation](https://arxiv.org/pdf/2410.22952)
+
+
+## VGGT inference
+
+![alt text](toy_output/depth_b0_s1.png)
