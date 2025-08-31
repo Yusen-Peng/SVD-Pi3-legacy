@@ -54,7 +54,7 @@ def visualize_vggt_predictions(predictions, show_tracks=True, point_stride=16):
             ncols = 2 if has_depth else 1
             fig = plt.figure(figsize=(6*ncols, 6))
             ax1 = fig.add_subplot(1, ncols, 1)
-            ax1.set_title(f"Image b={b}, s={s}")
+            ax1.set_title(f"Original Image")
             ax1.imshow(img)
             ax1.axis("off")
 

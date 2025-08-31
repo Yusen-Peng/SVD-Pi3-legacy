@@ -48,3 +48,32 @@ Alternative idea:
 ## VGGT inference
 
 ![alt text](toy_output/depth_b0_s1.png)
+
+![alt text](toy_output/depth_b0_s0.png)
+
+![alt text](toy_output/depth_b0_s2.png)
+
+## SVD-LLM preliminaries
+
+### Truncation-Aware Data Whitening
+
+using the calibration dataset for data whitening:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model jeffwan/llama-7b-hf --step 1 --ratio 0.2 --whitening_nsamples 256 --dataset wikitext2 --seed 3 --model_seq_len 2048 --save_path .
+```
+
+perplexity evaluation:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --step 4 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
+```
+
+```java
+PPL after pruning: {'wikitext2': 7.886706595810216}
+Weight Memory: 22008.912109375 MiB
+```
+
+### Finetuning with LoRA
+
+debugging...
