@@ -60,20 +60,69 @@ Alternative idea:
 using the calibration dataset for data whitening:
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model jeffwan/llama-7b-hf --step 1 --ratio 0.2 --whitening_nsamples 256 --dataset wikitext2 --seed 3 --model_seq_len 2048 --save_path .
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model jeffwan/llama-7b-hf --step 1 --ratio 0.2 --whitening_nsamples 256 --dataset wikitext2 --seed 3 --model_seq_len 2048 --save_path .
 ```
 
 perplexity evaluation:
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --step 4 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --step 4 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
 ```
 
 ```java
-PPL after pruning: {'wikitext2': 7.886706595810216}
-Weight Memory: 22008.912109375 MiB
+PPL after pruning: {'wikitext2': np.float64(7.8875114212717765)}
+Weight Memory: 22004.896484375 MiB
+```
+
+efficiency evaluation:
+
+```bash
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --step 5 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
+```
+
+```java
+Total Memory: 28.538090705871582 GB
+Weight Memory: 20.503570556640625 GB
+Activation Memory: 8.026554107666016 GB
+Throughput: 95.4817055628556 tokens/sec
 ```
 
 ### Finetuning with LoRA
 
-debugging...
+update W'u (~7 hours?):
+
+```bash
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python utils/LoRA.py --prune_model jeffwan_llama_7b_hf_whitening_only_0.8.pt --data_path yahma/alpaca-cleaned --output_dir ./first_half --lora_target_modules q_u_proj,k_u_proj,v_u_proj,o_u_proj,gate_u_proj,down_u_proj,up_u_proj --lora_r 8 --num_epochs 3 --learning_rate 1e-4 --batch_size 4
+```
+
+Immediate evaluation:
+
+```bash
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt --lora ./first_half /first_half --step 4
+```
+
+```java
+coming soon!
+```
+
+Update W'v:
+
+```bash
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python utils/LoRA.py --prune_model ./first_half/merge.pt --data_path yahma/alpaca-cleaned --output_dir ./second_half --lora_target_modules q_v_proj,k_v_proj,v_v_proj,o_v_proj,gate_v_proj,down_v_proj,up_v_proj --lora_r 8 --num_epochs 3 --learning_rate 1e-4 --batch_size 64
+```
+
+Immediate evaluation:
+
+```bash
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt --lora ./first_half /first_half --step 4
+```
+
+```java
+coming soon!
+```
+
+Final evaluation:
+
+```bash
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model_path ./first_half/merge.pt --lora ./second_half --step 4
+```

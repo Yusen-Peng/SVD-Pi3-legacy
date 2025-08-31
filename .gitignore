@@ -154,3 +154,4 @@ SVD-LLM/**/__pycache__
 SVD-LLM/utils/c4-*
 *.pth
 *.pt
+*.out
