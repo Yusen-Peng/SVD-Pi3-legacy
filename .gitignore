@@ -155,3 +155,4 @@ SVD-LLM/utils/c4-*
 *.pth
 *.pt
 *.out
+*.bin
