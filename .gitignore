@@ -152,6 +152,7 @@ SVD-LLM/.vscode/*
 SVD-LLM/cache/*
 SVD-LLM/**/__pycache__
 SVD-LLM/utils/c4-*
+SVD-LLM/first_half/*
 *.pth
 *.pt
 *.out
