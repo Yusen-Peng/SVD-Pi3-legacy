@@ -28,17 +28,31 @@ this **whitening matrix** is computed such that it satisfies the following prope
 
 ![alt text](docs/whitening.png)
 
-## brainstorming
+## SVD-LLM (V2)
 
-SVD-VGGT
+coming soon!
 
-1. baseline: original VGGT, compare GFLOPs etc.
-2. benchmark among 3 different ways of doing SVD: 
-    1. vanilla-SVD-based
-    2. ASVD-based (scaling matrix to make it activation aware)
-    3. SVD-LLM-based (whitening matrix to create a direct mapping between singular values and compression loss)
+## Evaluation
 
-Alternative idea:
+| method | GFLOPs (1 forward pass) | camera | depth | point | image matching | downstream (TBD) |
+| ----- | ------------------------ | ------ | ----- | ----- | -------------- | ---------------- |
+| VGGT | ? | ? | ? | ? | ? | ? |
+| VGGT with vanilla-SVD | ? | ? | ? | ? | ? | ? |
+| VGGT with ASVD | ? | ? | ? | ? | ? | ? |
+| **VGGT with SVD-LLM** | ? | ? | ? | ? | ? | ? |
+
+
+## Householder Transformation
+
+coming soon!
+
+
+## SVDFormer
+
+coming soon!
+
+
+## Alternative idea
 
 1. SVD-ViT (VGGT is already for multi-task, but maybe ViT has **broader impacts**?)
     1. use the whitening + param update introduced from SVD-LLM
@@ -60,39 +74,39 @@ Alternative idea:
 using the calibration dataset for data whitening:
 
 ```bash
-PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model jeffwan/llama-7b-hf --step 1 --ratio 0.2 --whitening_nsamples 256 --dataset wikitext2 --seed 3 --model_seq_len 2048 --save_path .
+CUDA_VISIBLE_DEVICES=<whichever_is_free> python SVDLLM.py --model jeffwan/llama-7b-hf --step 1 --ratio 0.2 --whitening_nsamples 256 --dataset wikitext2 --seed 3 --model_seq_len 2048 --save_path . --run_low_resource
 ```
 
 perplexity evaluation:
 
 ```bash
-PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --step 4 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
+CUDA_VISIBLE_DEVICES=<whichever_is_free> taskset -c 30-40 python SVDLLM.py --step 4 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
 ```
 
 ```java
-PPL after pruning: {'wikitext2': np.float64(7.8875114212717765)}
+PPL after pruning: {'wikitext2': 7.886700954800093}
 Weight Memory: 22004.896484375 MiB
 ```
 
 efficiency evaluation:
 
 ```bash
-PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --step 5 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
+CUDA_VISIBLE_DEVICES=<whichever_is_free> taskset -c 30-40 python SVDLLM.py --step 5 --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt
 ```
 
 ```java
 Total Memory: 28.538090705871582 GB
 Weight Memory: 20.503570556640625 GB
 Activation Memory: 8.026554107666016 GB
-Throughput: 95.4817055628556 tokens/sec
+Throughput: 69.48256829185354 tokens/sec
 ```
 
 ### Finetuning with LoRA
 
-update W'u (~12 hours):
+update W'u:
 
 ```bash
-PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python utils/LoRA.py --prune_model jeffwan_llama_7b_hf_whitening_only_0.8.pt --data_path yahma/alpaca-cleaned --output_dir ./first_half --lora_target_modules q_u_proj,k_u_proj,v_u_proj,o_u_proj,gate_u_proj,down_u_proj,up_u_proj --lora_r 8 --num_epochs 3 --learning_rate 1e-4 --batch_size 4 --micro_batch_size 1 --cutoff_len 1024 --group_by_length
+CUDA_VISIBLE_DEVICES=<whichever_is_free> nohup taskset -c 30-40 python utils/LoRA.py --prune_model jeffwan_llama_7b_hf_whitening_only_0.8.pt --data_path yahma/alpaca-cleaned --output_dir ./first_half --lora_target_modules q_u_proj,k_u_proj,v_u_proj,o_u_proj,gate_u_proj,down_u_proj,up_u_proj --lora_r 8 --num_epochs 3 --learning_rate 1e-4 --batch_size 4 --micro_batch_size 1 --cutoff_len 1024 --group_by_length &
 ```
 
 Immediate evaluation:
