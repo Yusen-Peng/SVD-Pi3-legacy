@@ -46,7 +46,9 @@ Apply householder transformation to achieve flexible bottleneck dimensionality:
 
 ## SVDFormer
 
-coming soon!
+A shallow feature extraction module with a feature enhancement module (with SVD-attention):
+
+![alt text](docs/SVDFormer.png)
 
 ## Evaluation
 
@@ -114,7 +116,7 @@ update W'u:
 CUDA_VISIBLE_DEVICES=<whichever_is_free> nohup taskset -c 30-40 python utils/LoRA.py --prune_model jeffwan_llama_7b_hf_whitening_only_0.8.pt --data_path yahma/alpaca-cleaned --output_dir ./first_half --lora_target_modules q_u_proj,k_u_proj,v_u_proj,o_u_proj,gate_u_proj,down_u_proj,up_u_proj --lora_r 8 --num_epochs 3 --learning_rate 1e-4 --batch_size 4 --micro_batch_size 1 --cutoff_len 1024 --group_by_length &
 ```
 
-```JSON
+```java
 {'train_runtime': 128586.2054, 'train_samples_per_second': 1.161, 'train_steps_per_second': 0.29, 'train_loss': 1.0868874290876194, 'epoch': 3.0}
 ```
 
