@@ -30,17 +30,13 @@ this **whitening matrix** is computed such that it satisfies the following prope
 
 ## SVD-LLM (V2)
 
-coming soon!
+adaptive compression ratio + two rounds SVD for finetuning:
 
-## Evaluation
+![alt text](docs/SVD-LLM_V2.png)
 
-| method | GFLOPs (1 forward pass) | camera | depth | point | image matching | downstream (TBD) |
-| ----- | ------------------------ | ------ | ----- | ----- | -------------- | ---------------- |
-| VGGT | ? | ? | ? | ? | ? | ? |
-| VGGT with vanilla-SVD | ? | ? | ? | ? | ? | ? |
-| VGGT with ASVD | ? | ? | ? | ? | ? | ? |
-| **VGGT with SVD-LLM** | ? | ? | ? | ? | ? | ? |
-
+| assigned ratio | min truncation loss |
+| ---- | ----- |
+| ![alt text](docs/ratio_formula.png) | ![alt text](docs/minimum_loss.png)|
 
 ## Householder Transformation
 
@@ -51,6 +47,14 @@ coming soon!
 
 coming soon!
 
+## Evaluation
+
+| method | GFLOPs (1 forward pass) | camera | depth | point | image matching | downstream (TBD) |
+| ----- | ------------------------ | ------ | ----- | ----- | -------------- | ---------------- |
+| VGGT | ? | ? | ? | ? | ? | ? |
+| VGGT with vanilla-SVD | ? | ? | ? | ? | ? | ? |
+| VGGT with ASVD | ? | ? | ? | ? | ? | ? |
+| **VGGT with SVD-LLM** | ? | ? | ? | ? | ? | ? |
 
 ## Alternative idea
 
@@ -109,10 +113,14 @@ update W'u:
 CUDA_VISIBLE_DEVICES=<whichever_is_free> nohup taskset -c 30-40 python utils/LoRA.py --prune_model jeffwan_llama_7b_hf_whitening_only_0.8.pt --data_path yahma/alpaca-cleaned --output_dir ./first_half --lora_target_modules q_u_proj,k_u_proj,v_u_proj,o_u_proj,gate_u_proj,down_u_proj,up_u_proj --lora_r 8 --num_epochs 3 --learning_rate 1e-4 --batch_size 4 --micro_batch_size 1 --cutoff_len 1024 --group_by_length &
 ```
 
+```JSON
+{'train_runtime': 128586.2054, 'train_samples_per_second': 1.161, 'train_steps_per_second': 0.29, 'train_loss': 1.0868874290876194, 'epoch': 3.0}
+```
+
 Immediate evaluation:
 
 ```bash
-PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt --lora ./first_half /first_half --step 4
+CUDA_VISIBLE_DEVICES=<whichever_is_free> taskset -c 30-40 python SVDLLM.py --model_path jeffwan_llama_7b_hf_whitening_only_0.8.pt --lora ./first_half --step 4
 ```
 
 ```java
