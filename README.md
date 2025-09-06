@@ -40,8 +40,9 @@ adaptive compression ratio + two rounds SVD for finetuning:
 
 ## Householder Transformation
 
-coming soon!
+Apply householder transformation to achieve flexible bottleneck dimensionality:
 
+![alt text](docs/householder.png)
 
 ## SVDFormer
 
