@@ -1,18 +1,4 @@
-# SVD-VGGT: Efficient Visual Geometry Grounded Transformer via Singular Value Decomposition
-
-## ASVD
-
-Activation-aware SVD (basically normalizing the activation):
-
-![alt text](docs/ASVD_1.png)
-
-where a **scaling matrix** $S$ (which is diagonal) can be derived as follows ($X$ is the input activation):
-
-![alt text](docs/ASVD_2.png)
-
-training objective (shared by SVD-LLM too):
-
-![alt text](docs/objective.png)
+# SVD-π3: Efficient Visual Geometry Learning via Singular Value Decomposition
 
 ## SVD-LLM
 
@@ -27,52 +13,6 @@ Instead of a simple/naive **scaling matrix** illustrated in [ASVD](docs/ASVD_2.p
 this **whitening matrix** is computed such that it satisfies the following property:
 
 ![alt text](docs/whitening.png)
-
-## SVD-LLM (V2)
-
-adaptive compression ratio + two rounds SVD for finetuning:
-
-![alt text](docs/SVD-LLM_V2.png)
-
-| assigned ratio | min truncation loss |
-| ---- | ----- |
-| ![alt text](docs/ratio_formula.png) | ![alt text](docs/minimum_loss.png)|
-
-## Householder Transformation
-
-Apply householder transformation to achieve flexible bottleneck dimensionality:
-
-![alt text](docs/householder.png)
-
-## SVDFormer
-
-A shallow feature extraction module with a feature enhancement module (with SVD-attention):
-
-![alt text](docs/SVDFormer.png)
-
-## Evaluation
-
-| method | GFLOPs (1 forward pass) | camera | depth | point | image matching | downstream (TBD) |
-| ----- | ------------------------ | ------ | ----- | ----- | -------------- | ---------------- |
-| VGGT | ? | ? | ? | ? | ? | ? |
-| VGGT with vanilla-SVD | ? | ? | ? | ? | ? | ? |
-| VGGT with ASVD | ? | ? | ? | ? | ? | ? |
-| **VGGT with SVD-LLM** | ? | ? | ? | ? | ? | ? |
-
-## Alternative idea
-
-1. SVD-ViT (VGGT is already for multi-task, but maybe ViT has **broader impacts**?)
-    1. use the whitening + param update introduced from SVD-LLM
-    2. compare with existing ViT-related work like [Efficient Adaptation of Pre-trained Vision Transformer via Householder Transformation](https://arxiv.org/pdf/2410.22952)
-
-
-## VGGT inference
-
-![alt text](toy_output/depth_b0_s1.png)
-
-![alt text](toy_output/depth_b0_s0.png)
-
-![alt text](toy_output/depth_b0_s2.png)
 
 ## SVD-LLM preliminaries
 
