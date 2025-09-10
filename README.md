@@ -92,3 +92,27 @@ Final evaluation:
 ```bash
 PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 taskset -c 30-40 python SVDLLM.py --model_path ./first_half/merge.pt --lora ./second_half --step 4
 ```
+
+## Efficiency Measurement
+
+HuggingFace repo for π3 model: [yyfz233/Pi3](https://huggingface.co/yyfz233/Pi3)
+
+get forward pass (ms) and throughput (frames/sec):
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python example.py --ckpt ./pi3_model.safetensors --efficiency_measure simple
+```
+
+| model | forward pass (ms) | throughput (frames/sec) |
+| ----- | ----------------- | ----------------------- |
+| original π3 | 1530.90 | 7.19 |
+| SVD-π3 (coming soon!) | ? | ? |
+
+detailed profiling:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python example.py --ckpt ./pi3_model.safetensors --efficiency_measure profiler
+```
+
+<img src="Pi3-main/topk_cuda_ops.png" width=500 height=400></img>
+

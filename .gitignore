@@ -158,3 +158,6 @@ SVD-LLM/second_half/*
 *.pt
 *.out
 *.bin
+*.safetensors
+*.log
+*.csv
